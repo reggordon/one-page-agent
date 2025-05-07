@@ -1,0 +1,8 @@
+openai
+jinja2
+fastapi
+uvicorn
+python-frontmatter
+markdown
+requests
+python-dotenv
