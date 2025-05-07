@@ -13,5 +13,7 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Create output directory at build time
 RUN mkdir -p output
 
+COPY assets/ assets/
+
 # Default run: launch the agent
 CMD ["python", "agent.py"]
