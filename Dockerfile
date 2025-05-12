@@ -1,19 +1,10 @@
-# Use slim Python base
 FROM python:3.10-slim
 
-# Create working dir
 WORKDIR /app
 
-# Copy project files
-COPY . .
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install pip and deps
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY backend/ .
 
-# Create output directory at build time
-RUN mkdir -p output
-
-COPY assets/ assets/
-
-# Default run: launch the agent
-CMD ["python", "agent.py"]
+CMD ["python", "app.py"]

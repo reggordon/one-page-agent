@@ -1,11 +1,22 @@
-version: '3'
+version: '3.8'
+
 services:
-  agent:
-    build: .
-    volumes:
-      - .:/app
-    env_file:
-      - .env
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: onepager-backend
     ports:
-      - "8000:8000"
-    command: uvicorn backend.app:app --host 0.0.0.0 --reload
+      - "5055:5000"  # local:container
+    volumes:
+      - ./backend:/app  # for live code changes
+
+  frontend:
+    image: python:3.10-slim
+    container_name: onepager-frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: python3 -m http.server 3000
+    ports:
+      - "3010:3000"
