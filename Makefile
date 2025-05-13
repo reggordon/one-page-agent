@@ -25,3 +25,21 @@ stop:
 clean: stop
 	@echo "🧹 Removing virtual environment"
 	rm -rf venv
+
+generate-page:
+	@echo "🧠 Generating styled HTML using module mode"
+	./venv/bin/python -m backend.main "hero section with call to action and three product cards"
+
+
+test-layout:
+	@echo "🔧 Testing layout inference"
+	./venv/bin/python -c "from backend.layout_engine import infer_layout; print(infer_layout('3-column grid with testimonials and a call-to-action'))"
+
+generate-from-file:
+	@echo "📄 Generating page from prompt.txt"
+	./venv/bin/python -m backend.main "$$(cat prompt.txt)"
+
+watch:
+	./venv/bin/python watch_and_build.py
+
+

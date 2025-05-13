@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  onepager-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: onepager-web
+    ports:
+      - "5050:5050"  # Flask app on localhost:5000
+    volumes:
+      - ./frontend:/app/frontend  # ✅ share generated output with host
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    restart: unless-stopped

@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  onepager-preview:
+    build:
+      context: .
+      dockerfile: Dockerfile.daythree
+    container_name: onepager-preview
+    ports:
+      - "3000:3000"
+    restart: unless-stopped

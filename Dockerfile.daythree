@@ -1,0 +1,26 @@
+# syntax=docker/dockerfile:1
+
+FROM python:3.10-slim
+
+# Set work directory
+WORKDIR /app
+
+# Copy dependencies
+COPY requirements.txt .
+
+# Create venv and install deps
+RUN python -m venv /venv \
+ && /venv/bin/pip install --upgrade pip \
+ && /venv/bin/pip install -r requirements.txt
+
+# Copy the entire project in
+COPY . .
+
+# Generate the page from a default prompt
+RUN /venv/bin/python -m backend.main "hero section with CTA and 3 product cards"
+
+# Expose port for static file server
+EXPOSE 3000
+
+# Serve the frontend folder
+CMD ["python3", "-m", "http.server", "3000", "--directory", "frontend"]
