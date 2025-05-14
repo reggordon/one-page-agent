@@ -31,44 +31,22 @@ project-root/
 │   └── output.html         ✅ Final generated file
 
 
-## 🏁 Restarting the Project
+Day 4
 
-To start everything in Docker:
-
-```bash
-cd onepager-agent
-docker compose up --build
-
-To clean up Docker
-
-docker compose down
-
-
-To run a Makefile ( lighter)
-
-| Command               | What It Does                                  |
-| --------------------- | --------------------------------------------- |
-| `make setup`          | Create venv and install deps                  |
-| `make run-backend`    | Run Flask API on port 5000                    |
-| `make serve-frontend` | Serve `index.html` on port 3000               |
-| `make restart`        | Kills old servers, then restarts backend + UI |
-| `make stop`           | Kills anything using ports 5000 or 3000       |
-| `make clean`          | Stops servers and deletes venv                |
+/ai-website-builder/
+├── app.py
+├── templates/
+│   └── index.html
+├── static/
+│   └── css/
+│       └── styles.css
+├── devtools/
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   ├── Makefile
+│   ├── README.md
 
 
-Day three
+## 🏁 Running the Project
 
-| generate-page | creates page|
-| serve-frontend | launches server|
-| preview-page | shows page on http://localhost:3000/output.html |
-
-
-# Build the Docker image
-
-docker compose -f docker-compose.daythree.yml up --build
-
-# kill the container
-docker compose -f docker-compose.daythree.yml down
-
-
-View on  : http://localhost:3000/output.html
+./venv/bin/python app.py

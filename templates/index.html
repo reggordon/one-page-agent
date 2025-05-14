@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Website Builder – Editor</title>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
+
+</head>
+<body>
+    <div id="controls">
+        <button id="toggleMode">Switch to View Mode</button>
+    </div>
+
+    <div id="main">
+        <div id="editor">
+            <div id="editorjs-section1"></div>
+            <div id="editorjs-section2"></div>
+            <div id="editorjs-section3"></div>
+        </div>
+
+        <div id="preview">
+            <div id="section1-preview"></div>
+            <div id="section2-preview"></div>
+            <div id="section3-preview"></div>
+        </div>
+    </div>
+
+    <script>
+        const editors = {};
+        let isEditing = true;
+
+        // Initialize Editor.js instances
+        ['section1', 'section2', 'section3'].forEach(id => {
+            editors[id] = new EditorJS({
+                holder: `editorjs-${id}`,
+                placeholder: `Write content for ${id}...`,
+                onChange: async () => {
+                    const output = await editors[id].save();
+                    const html = output.blocks.map(block => {
+                        if (block.type === 'paragraph') return `<p>${block.data.text}</p>`;
+                        if (block.type === 'header') return `<h2>${block.data.text}</h2>`;
+                        return '';
+                    }).join('');
+
+                    document.getElementById(`${id}-preview`).innerHTML = html;
+
+                    fetch('/update', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id, content: html })
+                    });
+                }
+            });
+        });
+
+        // Load saved content
+        window.addEventListener("DOMContentLoaded", () => {
+            fetch('/state')
+                .then(res => res.json())
+                .then(state => {
+                    Object.entries(state).forEach(async ([id, html]) => {
+                        const text = html.replace(/<\/?[^>]+(>|$)/g, "");
+                        await editors[id].isReady;
+                        editors[id].blocks.clear();
+                        editors[id].blocks.insert("paragraph", { text });
+                        document.getElementById(`${id}-preview`).innerHTML = html;
+                    });
+                });
+        });
+
+        // Toggle edit/view mode
+        const toggleBtn = document.getElementById('toggleMode');
+        toggleBtn.addEventListener('click', () => {
+            isEditing = !isEditing;
+            document.getElementById('editor').style.display = isEditing ? 'block' : 'none';
+            toggleBtn.textContent = isEditing ? "Switch to View Mode" : "Switch to Edit Mode";
+        });
+    </script>
+</body>
+</html>

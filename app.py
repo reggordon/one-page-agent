@@ -1,59 +1,35 @@
-from flask import Flask, request, render_template_string, redirect, url_for
-from backend.main import build_page
-import os
+from flask import Flask, request, render_template, jsonify
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
+# In-memory site state for all sections
+site_state = {}
+
+# Route: Serve the editor UI
+@app.route("/")
 def index():
-    if request.method == "POST":
-        prompt = request.form.get("prompt", "").strip()
-        if not prompt:
-            return "⚠️ Please enter a prompt.", 400
-        build_page(prompt)
-        return redirect(url_for("preview"))
+    return render_template("index.html")
 
-    return '''
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>One-Pager Generator</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-    <body class="p-8 font-sans bg-gray-100">
-        <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
-            <h1 class="text-2xl font-bold mb-4">Generate a One-Pager</h1>
-            <form method="POST">
-                <textarea name="prompt" rows="5" class="w-full border p-2 rounded mb-4" placeholder="Describe your page..."></textarea>
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Generate</button>
-            </form>
-        </div>
-    </body>
-    </html>
-    '''
+# Route: Receive updates from frontend
+@app.route("/update", methods=["POST"])
+def update_section():
+    data = request.get_json()
+    section_id = data.get("id")
+    new_content = data.get("content")
 
-@app.route("/preview")
-def preview():
-    output_path = "frontend/output.html"
-    if not os.path.exists(output_path):
-        return "⚠️ No output file found. Please submit a prompt first.", 404
+    if not section_id or not new_content:
+        return jsonify({"error": "Missing id or content"}), 400
 
-    with open(output_path, "r") as f:
-        content = f.read()
+    # Save content to state
+    site_state[section_id] = new_content
 
-    return render_template_string(f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <script src="https://cdn.tailwindcss.com"></script>
-        <title>Generated One-Pager</title>
-    </head>
-    <body class="bg-gray-50 font-sans">
-        {content}
-    </body>
-    </html>
-    """)
+    print(f"[UPDATE] {section_id}: {new_content[:50]}...")  # Trim for console
+    return jsonify({"html": new_content})
+
+# Route: Return current saved state
+@app.route("/state")
+def get_state():
+    return jsonify(site_state)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050, debug=True)
