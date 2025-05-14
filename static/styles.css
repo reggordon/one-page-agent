@@ -1,0 +1,70 @@
+:root {
+    --editor-bg: #f8f9fa;
+    --preview-bg: #ffffff;
+    --border-color: #ddd;
+    --accent: #3b82f6;
+    --accent-light: #e0e7ff;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#controls {
+    background: var(--accent-light);
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#toggleMode {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background 0.2s ease;
+}
+
+#toggleMode:hover {
+    background: #2563eb;
+}
+
+#main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex: 1;
+}
+
+#editor, #preview {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+#editor {
+    background: var(--editor-bg);
+    border-right: 1px solid var(--border-color);
+}
+
+#preview {
+    background: var(--preview-bg);
+}
+
+#preview > div {
+    background: #fff;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+}
