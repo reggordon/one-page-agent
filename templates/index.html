@@ -1,81 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>AI Website Builder – Editor</title>
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
+  <meta charset="UTF-8">
+  <title>AI Website Builder</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
+  <!-- Editor.js Core -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@1.7.0/dist/bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
+
+  <!-- App Logic (last) -->
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
 </head>
 <body>
-    <div id="controls">
-        <button id="toggleMode">Switch to View Mode</button>
+  <style id="live-style-preview"></style>
+
+  <div id="controls">
+    <h1>AI Website Builder</h1>
+    <span id="save-status"></span>
+    <button id="clearCanvas">Clear Canvas</button>
+    <button id="downloadSite">Download Website (.zip)</button>
+
+    <div id="css-controls" style="padding: 1rem;">
+      <label for="customCss">Custom CSS:</label><br>
+      <textarea id="customCss" rows="10" style="width:100%; font-family: monospace;"></textarea>
+
+      <label><input type="checkbox" id="liveCssToggle" checked> Live CSS Preview</label>
+§     <button id="resetCss" style="margin-left: 1rem;">Reset CSS</button>
+
     </div>
+  </div>
 
-    <div id="main">
-        <div id="editor">
-            <div id="editorjs-section1"></div>
-            <div id="editorjs-section2"></div>
-            <div id="editorjs-section3"></div>
-        </div>
-
-        <div id="preview">
-            <div id="section1-preview"></div>
-            <div id="section2-preview"></div>
-            <div id="section3-preview"></div>
-        </div>
-    </div>
-
-    <script>
-        const editors = {};
-        let isEditing = true;
-
-        // Initialize Editor.js instances
-        ['section1', 'section2', 'section3'].forEach(id => {
-            editors[id] = new EditorJS({
-                holder: `editorjs-${id}`,
-                placeholder: `Write content for ${id}...`,
-                onChange: async () => {
-                    const output = await editors[id].save();
-                    const html = output.blocks.map(block => {
-                        if (block.type === 'paragraph') return `<p>${block.data.text}</p>`;
-                        if (block.type === 'header') return `<h2>${block.data.text}</h2>`;
-                        return '';
-                    }).join('');
-
-                    document.getElementById(`${id}-preview`).innerHTML = html;
-
-                    fetch('/update', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ id, content: html })
-                    });
-                }
-            });
-        });
-
-        // Load saved content
-        window.addEventListener("DOMContentLoaded", () => {
-            fetch('/state')
-                .then(res => res.json())
-                .then(state => {
-                    Object.entries(state).forEach(async ([id, html]) => {
-                        const text = html.replace(/<\/?[^>]+(>|$)/g, "");
-                        await editors[id].isReady;
-                        editors[id].blocks.clear();
-                        editors[id].blocks.insert("paragraph", { text });
-                        document.getElementById(`${id}-preview`).innerHTML = html;
-                    });
-                });
-        });
-
-        // Toggle edit/view mode
-        const toggleBtn = document.getElementById('toggleMode');
-        toggleBtn.addEventListener('click', () => {
-            isEditing = !isEditing;
-            document.getElementById('editor').style.display = isEditing ? 'block' : 'none';
-            toggleBtn.textContent = isEditing ? "Switch to View Mode" : "Switch to Edit Mode";
-        });
-    </script>
+  <div id="main">
+    <div id="editor"></div>
+    <div id="preview"></div>
+  </div>
 </body>
 </html>

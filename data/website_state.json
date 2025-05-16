@@ -1,0 +1,26 @@
+{
+  "blocks": [
+    {
+      "id": "HjKXi68dPt",
+      "type": "header",
+      "data": {
+        "text": "heading",
+        "level": 1
+      }
+    },
+    {
+      "id": "guGonD_WbD",
+      "type": "image",
+      "data": {
+        "caption": "",
+        "withBorder": false,
+        "withBackground": false,
+        "stretched": false,
+        "file": {
+          "url": "/static/uploads/fugazi3.png"
+        }
+      }
+    }
+  ],
+  "css": ":root {\n    --editor-bg: #f8f9fa;\n    --preview-bg: #ffffff;\n    --border-color: #ddd;\n    --accent: #3b82f6;\n    --accent-light: #e0e7ff;\n}\n\nbody {\n    margin: 0;\n    font-family: 'Segoe UI', sans-serif;\n    background: #f1f5f9;\n    display: flex;\n    flex-direction: column;\n    height: 100vh;\n}\n\n#controls {\n    background: var(--accent-light);\n    padding: 1rem;\n    border-bottom: 1px solid var(--border-color);\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n#toggleMode {\n    background: var(--accent);\n    color: white;\n    border: none;\n    padding: 0.5rem 1rem;\n    font-weight: 600;\n    border-radius: 0.5rem;\n    cursor: pointer;\n    box-shadow: 0 2px 4px rgba(0,0,0,0.1);\n    transition: background 0.2s ease;\n}\n\n#toggleMode:hover {\n    background: #2563eb;\n}\n\n#main {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    flex: 1;\n}\n\n#editor, #preview {\n    padding: 1.5rem;\n    overflow-y: auto;\n}\n\n#editor {\n    background: var(--editor-bg);\n    border-right: 1px solid var(--border-color);\n}\n\n#preview {\n    background: var(--preview-bg);\n}\n\n#preview > div {\n    background: #fff;\n    padding: 1rem;\n    border: 1px solid var(--border-color);\n    border-radius: 0.75rem;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);\n    margin-bottom: 1.5rem;\n}\n\n/* Blog cards */\n@screen md {\n  .blog-grid {\n    @apply grid grid-cols-2 gap-x-6 gap-y-8;\n  }\n}\n/* Contact form */\n@screen md {\n  .contact-wrapper {\n    @apply flex flex-col md:flex-row gap-4;\n  }\n}\n"
+}
