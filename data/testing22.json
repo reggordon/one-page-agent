@@ -1,0 +1,27 @@
+{
+  "blocks": [
+    {
+      "id": "VlB2PyCOYS",
+      "type": "header",
+      "data": {
+        "text": "heading",
+        "level": 2
+      }
+    },
+    {
+      "id": "oL1z4lqrmn",
+      "type": "image",
+      "data": {
+        "caption": "",
+        "withBorder": false,
+        "withBackground": false,
+        "stretched": false,
+        "file": {
+          "url": "/static/uploads/fugazi3.png"
+        }
+      }
+    }
+  ],
+  "css": "",
+  "framework": ""
+}

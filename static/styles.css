@@ -7,22 +7,34 @@
 }
 
 body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #f1f5f9;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+  padding: 2rem;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+  background: #fff;
+  color: #111;
 }
 
-#controls {
-    background: var(--accent-light);
-    padding: 1rem;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+img {
+  display: block;
+  max-width: 80vw;      /* image won't exceed 80% of viewport width */
+  width: 100%;
+  height: auto;
+  margin: 1rem auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
+@media (max-width: 600px) {
+  img {
+    max-width: 95vw;
+  }
+}
+
+
+.site-preview-root > * {
+  margin-bottom: 2rem;
+}
+
 
 #toggleMode {
     background: var(--accent);
@@ -69,15 +81,36 @@ body {
     margin-bottom: 1.5rem;
 }
 
-/* Blog cards */
-@screen md {
-  .blog-grid {
-    @apply grid grid-cols-2 gap-x-6 gap-y-8;
-  }
+.site-preview-root {
+  font-family: 'Segoe UI', sans-serif;
+  background: white;
+  padding: 2rem;
 }
-/* Contact form */
-@screen md {
-  .contact-wrapper {
-    @apply flex flex-col md:flex-row gap-4;
-  }
+
+.site-preview-root h1,
+.site-preview-root h2,
+.site-preview-root p,
+.site-preview-root blockquote {
+  margin-bottom: 1.5rem;
+}
+
+/* View mode helpers */
+body.view-editor #preview,
+body.view-preview #editor {
+  display: none;
+}
+
+body.view-mobile #preview {
+  width: 375px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+body.view-editor #editor,
+body.view-preview #preview,
+body.view-mobile #preview,
+body.view-split #editor,
+body.view-split #preview {
+  display: block;
 }

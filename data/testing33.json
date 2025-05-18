@@ -1,0 +1,27 @@
+{
+  "blocks": [
+    {
+      "id": "RiQkK_aeGs",
+      "type": "header",
+      "data": {
+        "text": "Testing this",
+        "level": 2
+      }
+    },
+    {
+      "id": "ZUcYtdsy5G",
+      "type": "image",
+      "data": {
+        "caption": "",
+        "withBorder": false,
+        "withBackground": false,
+        "stretched": false,
+        "file": {
+          "url": "/static/uploads/metanoia_in_the_loft-17.jpg"
+        }
+      }
+    }
+  ],
+  "css": "",
+  "framework": ""
+}
