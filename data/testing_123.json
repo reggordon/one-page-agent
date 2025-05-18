@@ -1,0 +1,27 @@
+{
+  "blocks": [
+    {
+      "id": "q8H4FX-8mu",
+      "type": "header",
+      "data": {
+        "text": "this is a thing",
+        "level": 1
+      }
+    },
+    {
+      "id": "hWzOYEoYgQ",
+      "type": "image",
+      "data": {
+        "caption": "",
+        "withBorder": false,
+        "withBackground": false,
+        "stretched": false,
+        "file": {
+          "url": "/static/uploads/fugazi3.png"
+        }
+      }
+    }
+  ],
+  "css": "h1{color:red}",
+  "framework": "tailwind"
+}

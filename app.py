@@ -4,6 +4,7 @@ import os
 from werkzeug.utils import secure_filename
 from io import BytesIO
 import zipfile
+from datetime import datetime
 
 UPLOAD_FOLDER = 'static/uploads'
 app = Flask(__name__)
@@ -17,17 +18,19 @@ def index():
 # Route: Save the Editor.js content + CSS
 @app.route('/save', methods=['POST'])
 def save():
+    site = request.args.get('site','default')
     data = request.get_json()
     os.makedirs('data', exist_ok=True)
-    with open('data/website_state.json', 'w') as f:
+    with open(f'data/{site}.json', 'w') as f:
         json.dump(data, f, indent=2)
     return jsonify({"status": "saved"})
 
 # Route: Load saved content + CSS
 @app.route('/load', methods=['GET'])
 def load():
+    site = request.args.get('site','default')
     try:
-        with open('data/website_state.json') as f:
+        with open(f'data/{site}.json') as f:
             data = json.load(f)
         return jsonify(data)
     except FileNotFoundError:
@@ -56,29 +59,75 @@ def upload_file():
 # Route: Download full website as zip
 @app.route('/downloadZip', methods=['GET'])
 def download_zip():
-    with open('data/website_state.json') as f:
+    site = request.args.get('site', 'default')
+    data_path = f'data/{site}.json'
+
+    if not os.path.exists(data_path):
+        return jsonify({'error': f'Site "{site}" not found'}), 404
+
+    # Load saved content
+    with open(data_path) as f:
         site_data = json.load(f)
 
     blocks = site_data.get('blocks', [])
-    custom_css = site_data.get('css', '')
+    css = site_data.get('css', '')
+    framework = site_data.get('framework', '')
 
-    html_content = render_blocks_to_html(blocks)
+    # Render HTML
+    html = render_blocks_to_html(blocks, framework)
 
+    # Collect used image filenames
+    used_images = set()
+    for block in blocks:
+        if block.get("type") == "image":
+            file_info = block.get("data", {}).get("file", {})
+            url = file_info.get("url", "")
+            if url.startswith("/static/uploads/"):
+                used_images.add(os.path.basename(url))
+
+    # Prepare zip in memory
     mem_zip = BytesIO()
     with zipfile.ZipFile(mem_zip, 'w') as zf:
-        zf.writestr('index.html', html_content)
-        zf.writestr('style.css', custom_css or "body { font-family: sans-serif; }")
+        zf.writestr("index.html", html)
+        zf.writestr("style.css", css or "body { font-family: sans-serif; padding: 2rem; text-align: center; }")
 
-        uploads_path = 'static/uploads'
-        for fname in os.listdir(uploads_path):
-            fpath = os.path.join(uploads_path, fname)
-            zf.write(fpath, arcname=f'assets/{fname}')
+        uploads_dir = 'static/uploads'
+        for fname in used_images:
+            src = os.path.join(uploads_dir, fname)
+            if os.path.exists(src):
+                zf.write(src, arcname=f'assets/{fname}')
+
+        # Add manifest
+        manifest = {
+            "site": site,
+            "exported_at": datetime.utcnow().isoformat() + "Z",
+            "framework": framework,
+            "files": ["index.html", "style.css"] + [f"assets/{f}" for f in used_images]
+        }
+        zf.writestr("manifest.json", json.dumps(manifest, indent=2))
 
     mem_zip.seek(0)
-    return send_file(mem_zip, mimetype='application/zip', as_attachment=True, download_name='website.zip')
+    return send_file(
+        mem_zip,
+        mimetype='application/zip',
+        as_attachment=True,
+        download_name=f'{site}.zip'
+    )
 
-def render_blocks_to_html(blocks):
+
+
+def render_blocks_to_html(blocks, framework=''):
+
     body_html = []
+
+    framework_cdn = {
+        "bootstrap": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
+        "tailwind": "https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css",
+        "simple": "https://cdn.jsdelivr.net/npm/simpledotcss@1.0.0/simple.min.css"
+    }
+    framework_link = framework_cdn.get(framework, '')
+    head_extra = f'<link rel="stylesheet" href="{framework_link}">' if framework_link else ''
+
     for block in blocks:
         t = block.get('type')
         d = block.get('data', {})
@@ -102,16 +151,21 @@ def render_blocks_to_html(blocks):
             body_html.append(f"<div><img src='{img_url}' alt='{alt}' />{caption_html}</div>")
 
     return f"""<!DOCTYPE html>
-<html lang=\"en\">
-<head>
-  <meta charset=\"UTF-8\">
-  <title>Exported Site</title>
-  <link rel=\"stylesheet\" href=\"style.css\">
-</head>
-<body>
-{''.join(body_html)}
-</body>
-</html>"""
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <title>Exported Site</title>
+    {head_extra}
+    <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+    <div class="site-preview-root">
+        {''.join(body_html)}
+    </div>
+    </body>
+    </html>"""
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5050)

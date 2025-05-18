@@ -1,0 +1,26 @@
+{
+  "blocks": [
+    {
+      "id": "sro7XCrIbc",
+      "type": "paragraph",
+      "data": {
+        "text": "this is the heading"
+      }
+    },
+    {
+      "id": "EARbh6PHsX",
+      "type": "image",
+      "data": {
+        "caption": "",
+        "withBorder": false,
+        "withBackground": false,
+        "stretched": false,
+        "file": {
+          "url": "/static/uploads/fugazi2.png"
+        }
+      }
+    }
+  ],
+  "css": "",
+  "framework": "simple"
+}

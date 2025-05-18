@@ -1,0 +1,27 @@
+{
+  "blocks": [
+    {
+      "id": "l_giaZMrsG",
+      "type": "header",
+      "data": {
+        "text": "Heading",
+        "level": 2
+      }
+    },
+    {
+      "id": "OPdliFuJ1N",
+      "type": "image",
+      "data": {
+        "caption": "",
+        "withBorder": false,
+        "withBackground": false,
+        "stretched": false,
+        "file": {
+          "url": "/static/uploads/metanoia_in_the_loft-full_size-18.jpg"
+        }
+      }
+    }
+  ],
+  "css": "",
+  "framework": "tailwind"
+}

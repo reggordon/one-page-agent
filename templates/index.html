@@ -16,6 +16,18 @@
 
   <!-- App Logic (last) -->
   <script src="{{ url_for('static', filename='main.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const siteName = params.get('site') || 'default';
+    document.title = `AI Website Builder: ${siteName}`;
+    document.getElementById('site-name').textContent = `Editing: ${siteName}`;
+  });
+</script>
+
+<!-- In HTML -->
+<h1>AI Website Builder <span id="site-name" style="font-size: 1rem;"></span></h1>
+
 </head>
 <body>
   <style id="live-style-preview"></style>
@@ -25,20 +37,42 @@
     <span id="save-status"></span>
     <button id="clearCanvas">Clear Canvas</button>
     <button id="downloadSite">Download Website (.zip)</button>
-
     <div id="css-controls" style="padding: 1rem;">
       <label for="customCss">Custom CSS:</label><br>
       <textarea id="customCss" rows="10" style="width:100%; font-family: monospace;"></textarea>
-
       <label><input type="checkbox" id="liveCssToggle" checked> Live CSS Preview</label>
-§     <button id="resetCss" style="margin-left: 1rem;">Reset CSS</button>
-
+    <button id="resetCss" style="margin-left: 1rem;">Reset CSS</button>
     </div>
+
+    <label for="cssFramework">Base Framework:</label>
+    <select id="cssFramework">
+      <option value="">None (Custom only)</option>
+      <option value="bootstrap">Bootstrap 5</option>
+      <option value="tailwind">Tailwind CSS</option>
+      <option value="simple">Simple.css</option>
+    </select>
+
+  <div id="site-controls">
+  <input id="newSiteInput" placeholder="site-name" />
+  <button id="openSiteBtn">Open New Tab</button>
+
+  <select id="viewMode">
+  <option value="split">Split View</option>
+  <option value="editor">Editor Only</option>
+  <option value="preview">Preview Only</option>
+  <option value="mobile">Mobile Preview</option>
+</select>
+
+  </div>
+
+
   </div>
 
   <div id="main">
     <div id="editor"></div>
-    <div id="preview"></div>
+  <div id="preview">
+    <div class="site-preview-root"></div>
+  </div>
   </div>
 </body>
 </html>
